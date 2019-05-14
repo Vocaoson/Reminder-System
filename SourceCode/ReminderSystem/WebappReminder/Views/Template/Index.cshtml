@@ -1,0 +1,38 @@
+﻿@using DataAccess.Models
+@model List<Template>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" id="inputValidation" placeholder="Search" />
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <a href="/Template/Create" style="float:right;" class="btn btn-success" title="Create new template">Create new template</a>
+        </div>
+    </div>
+    <hr />
+    <div class="template-area">
+        @foreach (Template template in Model)
+        {
+            <div class="card template" style="width: 18rem;">
+                <img class="card-img-top" width="50" height="100" src="~/images/templates.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">@template.Name</h5>
+                    <p class="card-text">@template.Description</p>
+                    @Html.ActionLink("Edit","Edit","Template",new { id = template.Id},new { @class= "btn btn-primary" })
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

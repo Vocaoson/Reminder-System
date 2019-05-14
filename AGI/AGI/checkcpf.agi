@@ -1,0 +1,27 @@
+#! / usr / bin / php -q
+<?php
+
+include ('phpagi.php');
+
+$ cpf = $ argv [1];
+$ agi = new AGI ();
+$ db = mysqli_connect ("localhost", "root", "123456", "tts");
+
+if (! $ db) {
+ $ agi-> verbose ("Error trying to connect to MYSQL." mysqli_connect_error ());
+ exit (0);
+}
+
+$ res = $ db-> query ("SELECT * FROM client WHERE cpf = '$ cpf';");
+if ($ res-> num_rows == 0) {
+  $ agi-> set_variable ("CPFSTATUS", 0);
+  $ agi-> set_variable ("CPFMESSAGE", "CPF NOT FOUND, ENTER AGAIN");
+} else {
+  $ row = $ res-> fetch_object ();
+  $ agi-> set_variable ("CPFSTATUS", 1);
+  $ agi-> set_variable ("CPFMESSAGE", $ row-> name);
+}
+$ res-> close ();
+$ db-> close ();
+exit (0);
+?>

@@ -1,0 +1,15 @@
+#!/usr/bin/php -q
+
+<?php
+
+require_once 'phpagi.php';
+
+$agi = new AGI();
+$agi->verbose('HELLO');
+$agi->verbose($argv[2]);
+$agi->verbose($argv[1]);
+$agi->exec("WAIT 1");
+$agi->stream_file('MySystem');
+$agi->exec("WAIT 3");
+
+?>

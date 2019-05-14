@@ -1,0 +1,35 @@
+#!/usr/bin/php -q
+
+<?php
+
+require_once 'phpagi.php';
+
+$agi = new AGI();
+$agi->verbose('HELLO');
+$agi->verbose($argv[2]);
+$agi->verbose($argv[1]);
+
+$servername = "localhost";
+$username = "root";
+$password = "123456";
+$dbname = "calldetail";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+
+$sql = "INSERT INTO testfb2 (channel,fb) VALUES ('$argv[2]',$argv[1])";
+
+if ($conn->query($sql) === TRUE) {
+    $agi->verbose("New record created successfully");
+} else {
+    $agi->verbose("Error: " . $sql . "<br>" . $conn->error);
+}
+
+
+$conn->close();
+
+?>

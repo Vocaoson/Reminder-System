@@ -1,0 +1,15 @@
+<?php
+use PAGI\DialDescriptor\SIPDialDescriptor;
+use PAGI\CallSpool\CallFile;
+use PAGI\CallSpool\Impl\CallSpoolImpl;
+$dialDescriptor = new SIPDialDescriptor("myDevice", "myProvider");
+$callFile = new CallFile($dialDescriptor);
+$callFile->setCallerId('123');
+$callFile->setContext('campaignContext');
+$callFile->setExtension('555');
+$callFile->setPriority(1);
+$spool = CallSpoolImpl::getInstance(array(
+    "tmpDir" => "/tmp/temporaryDirForSpool",
+    "spoolDir" => "/var/lib/asterisk/spool/outgoing"
+));
+?>	

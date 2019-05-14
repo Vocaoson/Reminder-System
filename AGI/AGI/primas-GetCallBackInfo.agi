@@ -1,0 +1,34 @@
+#!/usr/bin/php7.0
+
+<?php
+
+require_once('DatabaseUtils.php');
+require_once 'phpagi.php';
+
+$agi = new AGI();
+$agi->verbose('HELLO');
+
+$db = new DatabaseUtils('freedomq', 'localhost', 'user104', 'password1');
+
+$sql = "SELECT callerid,internalno,externalno,linkscopeid,otherdata FROM call_files WHERE id=:ID";
+$params = array('ID' => $argv[1]);
+$callbackInfo = $db->select($sql, $params);
+
+if($callbackInfo != false) {
+	$agi->set_variable('callerid',$callbackInfo[0]['callerid']);
+	$agi->set_variable('internalno',$callbackInfo[0]['internalno']);
+	$agi->set_variable('externalno',$callbackInfo[0]['externalno']);
+	$agi->set_variable('linkscopeid',$callbackInfo[0]['linkscopeid']);
+	if($callbackInfo[0]['otherdata'] != '')
+	{
+		$otherInfo = json_decode($callbackInfo[0]['otherdata']);
+		$agi->set_variable('remainingcallback',$otherInfo->remaining_callback);
+		$agi->set_variable('calltype',$otherInfo->calltype);
+		$agi->set_variable('callingtotype',$otherInfo->callingtotype);
+	}
+	else{
+		$agi->set_variable('remainingcallback','N');
+	}
+}
+
+?>

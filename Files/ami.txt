@@ -1,0 +1,27 @@
+Action:Originate
+Channel:SIP/1002
+Exten:1003
+Context:test-agi
+Priority:1
+
+Login
+
+Action:Login
+Username:son
+Secret:123456
+
+Action:Originate
+Channel: SIP/1002
+Variable: ActionId=hihi
+Callerid: Call Center
+RetryTime: 10
+Context:test-agi
+Exten:1003
+Priority: 1
+Archive: yes
+
+{
+  "TemplateId":1,
+  "PhoneNumber":"123456",
+  "Data":"{\"Name\":\"Mr Son\"}"
+ }

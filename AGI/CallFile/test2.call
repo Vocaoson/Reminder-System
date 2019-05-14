@@ -1,0 +1,9 @@
+Channel: SIP/1002
+;Application: Playback
+;Data: hello-world
+Callerid: Call Center
+RetryTime: 10
+Context: testdial
+Extension: s
+Priority: 1
+Archive: yes
