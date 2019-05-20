@@ -16,7 +16,7 @@ namespace WebappReminder.Controllers
         public BackgroundController(ApplicationDbContext context)
         {
             this.db = context;
-            asterisk = new Asterisk("192.168.100.99", 5038, "son", "123456");
+            asterisk = new Asterisk("192.168.111.128", 5038, "son", "123456");
         }
         public IActionResult Index()
         {

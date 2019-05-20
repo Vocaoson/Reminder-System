@@ -74,12 +74,14 @@ namespace WebappReminder.Controllers
                 return Content("file not selected");
 
             //
-            string audioPath = saveFileAudio(template, audio);
-            createTemplate(template, audioPath);
+            var userId = db.User.Where(user => user.UserName == this.User.Identity.Name).First().Id;
+            string fileNameRandom = RandomString(10);
+            createTemplate(template, fileNameRandom);
+            saveFileAudio(template, audio, userId, fileNameRandom);
             return RedirectToAction("Index");
         }
 
-        private void createTemplate(Template template, string audioPath)
+        private void createTemplate(Template template, string fileNameRandom)
         {
             // get user id
             var userId = db.User.Where(user => user.UserName == this.User.Identity.Name).First().Id;
@@ -95,7 +97,7 @@ namespace WebappReminder.Controllers
             // add autio to read sentence
             sentenceRead.Data = new List<DataAccess.Models.Data>()
             {
-                new DataAccess.Models.Data(){ DataStore = audioPath, Order = 1, DataType = 2}
+                new DataAccess.Models.Data(){ DataStore = fileNameRandom, Order = 1, DataType = 2}
             };
             template.Sentence = new List<Sentence>();
             template.Sentence.Add(sentenceRead);
@@ -108,21 +110,27 @@ namespace WebappReminder.Controllers
             db.SaveChanges();
 
         }
-        private string saveFileAudio(Template template, IFormFile audio)
+        private void saveFileAudio(Template template, IFormFile audio, string userId, string fileNameRandom)
         {
             var audioPath = config.Value.AudioPath;
-            if (!Directory.Exists(Path.Combine(audioPath, template.Id.ToString())))
+            FileInfo fileInfo = new FileInfo(audio.FileName);
+            if (!Directory.Exists(Path.Combine(audioPath, userId)))
             {
-                var dir = Directory.CreateDirectory(Path.Combine(audioPath, template.Id.ToString()));
-                audioPath = dir.FullName;
+                var dir = Directory.CreateDirectory(Path.Combine(audioPath, userId));
             }
-            var path = Path.Combine(audioPath, audio.FileName);
+            var path = Path.Combine(audioPath, userId, string.Concat(fileNameRandom, fileInfo.Extension));
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
                 audio.CopyToAsync(stream);
             }
-            return path;
+        }
+        public string RandomString(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
     }
