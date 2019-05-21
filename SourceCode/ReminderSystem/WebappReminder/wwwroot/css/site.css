@@ -68,3 +68,24 @@ body {
     flex-wrap: wrap;
     justify-content: space-between;
 }
+.template:hover{
+    opacity:0.8;
+    cursor:pointer;
+}
+.bar {
+    width: 25px;
+    height: 100px;
+    /* Add your code below this line */
+    margin: 2px;
+    /* Add your code above this line */
+    display: inline-block;
+    background-color: blue;
+}
+.week-report div:hover{
+    background-color:red;
+    cursor:pointer;
+}
+.something-report div:hover {
+    background-color: green;
+    cursor: pointer;
+}

@@ -24,7 +24,6 @@ namespace WebappReminder.Controllers
         {
             this.db = db;
             this.config = config;
-
         }
         public IActionResult Index()
         {
@@ -43,24 +42,30 @@ namespace WebappReminder.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(IFormFile audio, Template template)
         {
-            if(audio != null && audio.Length == 0)
-            {
-                //save file
-
-            }
             // edit template
-            Template temp = db.Template.Where(item => item.Id == template.Id).FirstOrDefault();
-            if(temp == null)
+            Template temp = db.Template.Where(item => item.Id == template.Id).Include(item => item.Sentence).FirstOrDefault();
+            if(temp != null)
             {
-
-            } else
-            {
+                if (audio != null && audio.Length != 0)
+                {
+                    //save new file
+                    var userId = db.User.Where(user => user.UserName == this.User.Identity.Name).First().Id;
+                    string fileNameRandom = RandomString(10);
+                    saveFileAudio(template, audio, userId, fileNameRandom);
+                                    // get sentence read
+                Sentence readSentence = temp.Sentence.First();
+                // get data from read sentence, now, we just have only one row data is the audio name
+                DataAccess.Models.Data data = db.Data.Where(item => item.SentenceId == readSentence.Id).First();
+                data.DataStore = fileNameRandom;
+                }
+                // 
                 temp.Name = template.Name;
                 temp.Description = template.Description;
                 temp.LinkBack = template.LinkBack;
+                db.SaveChanges();
+                ViewBag.isSucceeded = true;
             }
-            return View(temp);
-       
+            return View(temp);      
         }
 
         public IActionResult Create()
@@ -80,7 +85,6 @@ namespace WebappReminder.Controllers
             saveFileAudio(template, audio, userId, fileNameRandom);
             return RedirectToAction("Index");
         }
-
         private void createTemplate(Template template, string fileNameRandom)
         {
             // get user id
@@ -122,8 +126,17 @@ namespace WebappReminder.Controllers
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
-                audio.CopyToAsync(stream);
+                 audio.CopyToAsync(stream);
             }
+        }
+
+        public IActionResult Delete(int id)
+        {
+            Template temp = db.Template.Where(item => item.Id == id).Include(item => item.Sentence).FirstOrDefault();
+            db.Template.Remove(temp);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+
         }
         public string RandomString(int length)
         {

@@ -13,6 +13,7 @@ namespace WebappReminder.Data
             : base(options)
         {
         }
+        public ApplicationDbContext() { }
         public virtual DbSet<DataAccess.Models.Action> Action { get; set; }
         public virtual DbSet<DataAccess.Models.Data> Data { get; set; }
         public virtual DbSet<Result> Result { get; set; }

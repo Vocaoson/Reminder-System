@@ -6,14 +6,23 @@
 
 <h1>Edit</h1>
 
-<h4>Template</h4>
+<h4>My Template</h4>
+@{
+    if (ViewBag.isSucceeded != null && ViewBag.isSucceeded == true)
+    {
+        <div class="alert alert-success">
+            <p>Edit successfully!</p>
+        </div>
+    }
+}
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input asp-for="Id" type="hidden" value="@Model.Id" class="form-control" />
+                <label class="control-label">Template ID</label>
+                <input asp-for="Id" type="text" disabled value="@Model.Id" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>

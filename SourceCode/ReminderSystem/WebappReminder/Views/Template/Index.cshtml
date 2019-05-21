@@ -1,7 +1,7 @@
 ﻿@using DataAccess.Models
 @model List<Template>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Template";
 }
 
 <div class="container">
@@ -29,7 +29,8 @@
                 <div class="card-body">
                     <h5 class="card-title">@template.Name</h5>
                     <p class="card-text">@template.Description</p>
-                    @Html.ActionLink("Edit","Edit","Template",new { id = template.Id},new { @class= "btn btn-primary" })
+                    @Html.ActionLink("Edit", "Edit", "Template", new { id = template.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Delete", "Delete", "Template", new { id = template.Id }, new { @class = "btn btn-danger" })
                 </div>
             </div>
         }

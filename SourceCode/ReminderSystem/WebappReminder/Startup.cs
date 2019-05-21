@@ -15,6 +15,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DataAccess.Models;
 using WebappReminder.Models;
+using Hangfire;
+using Hangfire.MySql.Core;
+using WebappReminder.Backgrounds;
 
 namespace WebappReminder
 {
@@ -46,10 +49,21 @@ namespace WebappReminder
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.Configure<Config>(Configuration.GetSection("MyConfig"));
+            services.AddHangfire(configuration => {
+                configuration.UseStorage(
+                    new MySqlStorage(
+                        Configuration.GetConnectionString("DefaultConnection"),
+                        new MySqlStorageOptions
+                        {
+                            TablePrefix = "Hangfire"
+                        }
+                    )
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -75,6 +89,14 @@ namespace WebappReminder
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseHangfireServer();
+            app.UseHangfireDashboard("/hangfire");
+            RecurringJob.AddOrUpdate(
+     () => (new Job(context)).RunAction(),
+     Cron.Minutely);
+            RecurringJob.AddOrUpdate(
+  () => (new Job(context)).SendDataBack(),
+  Cron.Minutely);
         }
     }
 }

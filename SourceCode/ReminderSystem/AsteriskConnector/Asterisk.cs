@@ -101,7 +101,7 @@ namespace AsteriskConnector
 
                 await client.Where(message => message["Event"] == "FullyBooted").FirstAsync();
 
-                var response = await client.Publish(new AmiMessage()
+                var response = client.Publish(new AmiMessage()
             {
                     { "Action", "Originate" },
                    { "Channel", channel },
@@ -120,15 +120,15 @@ namespace AsteriskConnector
                 // requests and responses, allowing this client to be used
                 // by multiple threads or tasks.
 
-                if (response["Response"] == "Success")
-                {
-                    return true;
-                    //await client
-                    //   .Where(message => message["ActionID"] == response["ActionID"])
-                    //   .TakeWhile(message => message["Event"] != "PeerlistComplete")
-                    //   .Do(message => Console.Out.WriteLine($"~~~ \"{message["ObjectName"]}\" ({message["DeviceState"]}) ~~~"));
-                }
-                return false;
+                //if (response["Response"] == "Success")
+                //{
+                //    return true;
+                //    //await client
+                //    //   .Where(message => message["ActionID"] == response["ActionID"])
+                //    //   .TakeWhile(message => message["Event"] != "PeerlistComplete")
+                //    //   .Do(message => Console.Out.WriteLine($"~~~ \"{message["ObjectName"]}\" ({message["DeviceState"]}) ~~~"));
+                //}
+                return true;
             }
         }
         public async Task Test()

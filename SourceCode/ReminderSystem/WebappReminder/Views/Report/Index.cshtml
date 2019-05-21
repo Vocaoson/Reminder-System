@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewData["Title"] = "Report";
+}
+
+<h1>My reports</h1>
+<br />
+<div class="row">
+    <div class="col-lg-6 col-sm-12">
+        <i>1. Numbers of call each day in a week</i>
+        <hr />
+        <div class="week-report">
+            <br />
+        </div>
+    </div>
+    <div class="col-lg-6 col-sm-12">
+        <i>2. Numbers of call each day in a week</i>
+        <hr />
+        <div class="something-report">
+            <br />
+        </div>
+    </div>
+</div>
+<hr />
+<div>
+
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(() => {
+
+            const data = $.ajax("Report/GetWeekReport").done(function (dataset) {
+                d3.select(".week-report").selectAll("div")
+                    .data(dataset)
+                    .enter()
+                    .append("div")
+                    .attr("class", "bar")
+                    .attr('title', d => d)
+                    .style("height", (d) => (d * 10 + "px"))
+                // somthing report
+                d3.select(".something-report").selectAll("div")
+                    .data(dataset)
+                    .enter()
+                    .append("div")
+                    .attr("class", "bar")
+                    .attr('title', d => d)
+                    .style("height", (d) => (d * 10 + "px"))
+            });
+            const dataset = [12, 31, 22, 17, 25, 18, 29, 14, 9];
+        })
+    </script>
+    }
+
