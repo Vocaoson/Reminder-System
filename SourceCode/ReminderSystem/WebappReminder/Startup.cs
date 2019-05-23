@@ -18,6 +18,7 @@ using WebappReminder.Models;
 using Hangfire;
 using Hangfire.MySql.Core;
 using WebappReminder.Backgrounds;
+using Microsoft.Extensions.Options;
 
 namespace WebappReminder
 {
@@ -63,7 +64,7 @@ namespace WebappReminder
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext context, IOptions<Config> config)
         {
             if (env.IsDevelopment())
             {
@@ -92,10 +93,10 @@ namespace WebappReminder
             app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire");
             RecurringJob.AddOrUpdate(
-     () => (new Job(context)).RunAction(),
+     () => (new Job(context,config)).RunAction(),
      Cron.Minutely);
             RecurringJob.AddOrUpdate(
-  () => (new Job(context)).SendDataBack(),
+  () => (new Job(context,config)).SendDataBack(),
   Cron.Minutely);
         }
     }

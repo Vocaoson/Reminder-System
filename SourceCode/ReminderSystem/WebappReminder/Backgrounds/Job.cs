@@ -1,11 +1,13 @@
 ﻿using AsteriskConnector;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebappReminder.Data;
+using WebappReminder.Models;
 
 namespace WebappReminder.Backgrounds
 {
@@ -13,10 +15,12 @@ namespace WebappReminder.Backgrounds
     {
         Asterisk asterisk;
         ApplicationDbContext db;
-        public Job(ApplicationDbContext db)
+        IOptions<Config> config;
+        public Job(ApplicationDbContext db, IOptions<Config> config)
         {
             this.db = db;
-            asterisk = new Asterisk("192.168.111.128", 5038, "son", "123456");
+            this.config = config;
+            asterisk = new Asterisk(this.config.Value.AsteriskIp, this.config.Value.AsteriskPort, this.config.Value.AsteriskUserName, this.config.Value.AsteriskPassword);
         }
         public void RunAction()
         {
@@ -28,7 +32,7 @@ namespace WebappReminder.Backgrounds
                 {
                     if (action.IsDone == false)
                     {
-                        bool actionResult = asterisk.Call(action.PhoneNumber, string.Concat("ActionId=", action.Id)).Result;
+                        bool actionResult = asterisk.Call(string.Concat(this.config.Value.Trunk,action.PhoneNumber), string.Concat("ActionId=", action.Id)).Result;
                         if (actionResult)
                         {
                             action.IsDone = true;
